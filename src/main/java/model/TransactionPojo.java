@@ -14,7 +14,7 @@ public class TransactionPojo {
 
 	}
 
-	public TransactionPojo(int transactionNumber, int accountNumber, String time, String transactionType, double transactionAmount, double updatedBalance) {
+	public TransactionPojo(int transactionNumber, int accountNumber, String transactionType, double transactionAmount, double updatedBalance, String time) {
 		super();
 		this.transactionNumber = transactionNumber;
 		this.accountNumber = accountNumber;
