@@ -16,7 +16,7 @@ public class AccountServiceImpl implements AccountService {
 		accountDao = new AccountDaoDatabaseImpl();
 	}
 	
-	public AccountPojo addAccount(AccountPojo accountPojo) {
+	public boolean addAccount(AccountPojo accountPojo) {
 		return accountDao.addAccount(accountPojo);
 	}
 	

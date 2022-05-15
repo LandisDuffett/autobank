@@ -22,10 +22,10 @@ public class TransactionDaoDatabaseImpl implements TransactionDao {
 
 			Statement stmt = conn.createStatement();
 
-			String query = "INSERT INTO transactions(account_number, transaction_type, transaction_amount, updated_balance, time) VALUES('"
+			String query = "INSERT INTO transactions(account_number, transaction_type, transaction_amount, updated_balance, time, target_accno, target_routno) VALUES('"
 					+ transactionPojo.getAccountNumber() + "', '" + transactionPojo.getTransactionType() + "', '"
 					+ transactionPojo.getTransactionAmount() + "', '" + transactionPojo.getUpdatedBalance() + "', '"
-					+ transactionPojo.getTime() + "')";
+					+ transactionPojo.getTargetAccNo() + "', '" + + transactionPojo.getTargetRoutNo() + "', '" + transactionPojo.getTime() + "')";
 
 			int rowsAffected = stmt.executeUpdate(query);
 		} catch (SQLException e) {
@@ -56,7 +56,7 @@ public class TransactionDaoDatabaseImpl implements TransactionDao {
 			while (resultSet.next()) {
 				counter++;
 
-				TransactionPojo transactionPojo = new TransactionPojo(resultSet.getInt(1), resultSet.getInt(2), resultSet.getString(3), resultSet.getDouble(4), resultSet.getDouble(5), resultSet.getString(6));
+				TransactionPojo transactionPojo = new TransactionPojo(resultSet.getInt(1), resultSet.getInt(2), resultSet.getString(3), resultSet.getDouble(4), resultSet.getDouble(5), resultSet.getString(6), resultSet.getInt(7), resultSet.getInt(8));
 				allTransactions.add(transactionPojo);
 			}
 			/*
@@ -80,7 +80,7 @@ public class TransactionDaoDatabaseImpl implements TransactionDao {
 			String query = "SELECT * FROM transactions WHERE transaction_number=" + transactionNumber;
 			ResultSet resultSet = stmt.executeQuery(query);
 			if (resultSet.next()) {
-				transactionPojo = new TransactionPojo(resultSet.getInt(1), resultSet.getInt(2), resultSet.getString(3), resultSet.getDouble(4), resultSet.getDouble(5), resultSet.getString(6));
+				transactionPojo = new TransactionPojo(resultSet.getInt(1), resultSet.getInt(2), resultSet.getString(3), resultSet.getDouble(4), resultSet.getDouble(5), resultSet.getString(6), resultSet.getInt(7), resultSet.getInt(8));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -110,7 +110,7 @@ public class TransactionDaoDatabaseImpl implements TransactionDao {
 			while (resultSet.next()) {
 				counter++;
 
-				TransactionPojo transactionPojo = new TransactionPojo(resultSet.getInt(1), resultSet.getInt(2), resultSet.getString(3), resultSet.getDouble(4), resultSet.getDouble(5), resultSet.getString(6));
+				TransactionPojo transactionPojo = new TransactionPojo(resultSet.getInt(1), resultSet.getInt(2), resultSet.getString(3), resultSet.getDouble(4), resultSet.getDouble(5), resultSet.getString(6), resultSet.getInt(7), resultSet.getInt(8));
 
 				theTransactionsForOneAccNo.add(transactionPojo);
 			}

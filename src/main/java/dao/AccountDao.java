@@ -6,7 +6,7 @@ import model.AccountPojo;
 
 public interface AccountDao {
 
-	AccountPojo addAccount(AccountPojo accountPojo);
+	boolean addAccount(AccountPojo accountPojo);
 
 	List<AccountPojo> getAllAccounts();
 

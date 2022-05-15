@@ -1,5 +1,6 @@
 package presentation;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -33,9 +34,11 @@ public class AutoBankSystem {
 
 		UserPojo newUserPojo = new UserPojo();
 		UserPojo returnedUserPojo = null;
+		AccountPojo newAccountPojo = new AccountPojo(); 
 
 		/*
-		//create new useraccount System.out.println("Enter new user name");
+		//create new useraccount 
+		System.out.println("Enter new user name");
 		newUserPojo.setUserName(scan.nextLine());
 		System.out.println("Enter new password");
 		newUserPojo.setUserPassword(scan.nextLine());
@@ -43,7 +46,8 @@ public class AutoBankSystem {
 		newUserPojo.setUserFirstName(scan.nextLine());
 		System.out.println("Enter new user last name");
 		newUserPojo.setUserLastName(scan.nextLine());
-		System.out.println("Enter new PIN"); newUserPojo.setUserPin(scan.nextInt());
+		System.out.println("Enter new PIN"); 
+		newUserPojo.setUserPin(scan.nextInt());
 		returnedUserPojo = userService.addUser(newUserPojo);
 		System.out.println("Welcome, " + returnedUserPojo.getUserFirstName());
 		*/
@@ -66,22 +70,80 @@ public class AutoBankSystem {
 		System.out.println("User ID:" + getUserPojo.getUserId());
 		*/
 		
+		//log in
+		
+		System.out.println("Enter user name");
+		newUserPojo.setUserName(scan.nextLine());
+		System.out.println("Enter password");
+		newUserPojo.setUserPassword(scan.nextLine());
+		returnedUserPojo = userService.logIn(newUserPojo);
+		System.out.println("User id: " + returnedUserPojo.getUserLastName());
+		
+		
+		//log out
+		/*
+		System.out.println("Log out and close application:");
+		String input = scan.nextLine();
+		if(input != null) {
+			System.out.println("You are logged out...Goodbye.");
+			userService.logOut();
+		}
+		*/
+		//change password
+		/*
+		System.out.println("enter new password");
+		newUserPojo.setUserPassword(scan.nextLine());
+		System.out.println("enter PIN");
+		newUserPojo.setUserPin(scan.nextInt());
+		returnedUserPojo = userService.changePassword(newUserPojo);
+		System.out.println("New password: " + returnedUserPojo.getUserPassword());
+		*/
+		
+		//recover password
+		/*
+		System.out.println("enter PIN");
+		newUserPojo.setUserPin(scan.nextInt());
+		System.out.println("enter one account number");
+		newAccountPojo.setAccountNumber(scan.nextInt());
+		System.out.println("enter Access Code for that account");
+		newAccountPojo.setAccessCode(scan.nextInt());
+		returnedUserPojo = userService.recoverPassword(newUserPojo, newAccountPojo);
+		System.out.println("Your password is: " + returnedUserPojo.getUserPassword());
+		*/
+		
+		//remove user account
+		/*
+		System.out.println("Enter PIN");
+		newUserPojo.setUserPin(scan.nextInt());
+		try {
+			boolean success = userService.removeUserAccount(newUserPojo);
+			if(success) {
+				System.out.println("success");
+			} else {
+				System.out.println("fail");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
+		
 		// ACCOUNT METHODS
 		
 		 AccountService accountService = new AccountServiceImpl();
 		  
-		 AccountPojo newAccountPojo = new AccountPojo(); AccountPojo
-		 returnedAccountPojo = null;
-		 /*
+		 AccountPojo returnedAccountPojo = null;
+		 
 		 //create new bankaccount
+		 
 		 System.out.println("Enter new account type(checking or savings)");
+		 //use switch statement to validate choice: 1 = checking, 2 = savings, else=not a valid choice, choose again
 		 newAccountPojo.setAccountType(scan.nextLine());
 		 System.out.println("Enter new acount access code");
-		 newAccountPojo.setAccessCode(scan.nextInt()); returnedAccountPojo =
-		 accountService.addAccount(newAccountPojo);
-		 System.out.println("Your account type is: " +
-		 returnedAccountPojo.getAccountType());
-		*/
+		 newAccountPojo.setAccessCode(scan.nextInt()); 
+		 boolean creation = accountService.addAccount(newAccountPojo);
+		 System.out.println("Acount creation was: " + creation);
+		
 		
 		// get all accounts
 		/*
@@ -188,14 +250,14 @@ public class AutoBankSystem {
 		List<TransactionPojo> theTransactionsByAccNo;
 		theTransactionsByAccNo = transactionService.getTransactionsForOneAccNo(accno);
 		theTransactionsByAccNo.forEach((item) -> System.out.println(item.getTransactionNumber() + "\t" + item.getAccountNumber() + "\t"
-				+ item.getTime() + "\t" + item.getTransactionType() + "\t" + item.getTransactionAmount() + + item.getUpdatedBalance() + "\t"));
+				+ item.getTime() + "\t" + item.getTransactionType() + "\t" + item.getTransactionAmount() + "\t" + item.getUpdatedBalance() + "\t" + item.getTargetAccNo()+"\t"+item.getTargetRoutNo()));
 		*/
 
 		// SESSION METHODS
 		SessionService sessionService = new SessionServiceImpl();
 		
-		SessionPojo newSessionPojo = new SessionPojo(); SessionPojo
-		returnedSessionPojo = null;
+		SessionPojo newSessionPojo = new SessionPojo(); 
+		SessionPojo returnedSessionPojo = null;
 		/*
 		System.out.println("Enter new userId");
 		newSessionPojo.setUserId(scan.nextInt());
@@ -214,14 +276,15 @@ public class AutoBankSystem {
 				+ item.getLoginTime() + "\t" + item.getLogoutTime()));
 		*/
 		
-		
+		/*
 		//get all sessions for one user
 		System.out.println("Enter user id");
 		int userid = scan.nextInt();
 		List<SessionPojo> theSessionsByUser;
 		theSessionsByUser = sessionService.getSessionsForOneUser(userid);
 		theSessionsByUser.forEach((item) -> System.out.println(item.getSessionNumber() + "\t" + item.getUserId() + "\t"
-				+ item.getLoginTime() + "\t" + item.getLogoutTime()));		 
+				+ item.getLoginTime() + "\t" + item.getLogoutTime()));	
+		*/	 
 	}
 	
 }
