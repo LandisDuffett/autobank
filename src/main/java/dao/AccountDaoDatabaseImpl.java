@@ -7,6 +7,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import exception.BalanceNotEmptyException;
+import exception.SystemException;
 import model.AccountPojo;
 import model.TransactionPojo;
 import model.UserPojo;
@@ -98,6 +100,61 @@ public class AccountDaoDatabaseImpl implements AccountDao {
 		}
 		return accountPojo;
 
+	}
+	
+	public boolean closeBankAccount(AccountPojo accountPojo, UserPojo userPojo) throws SystemException, BalanceNotEmptyException, SQLException {
+		Connection conn = null;
+		boolean success = false;
+		try {
+			conn = DBUtil.makeConnection();
+			Statement stmt = conn.createStatement();
+			String query = "SELECT accounts.account_number, accounts.account_type, accounts.account_balance, accounts.access_code FROM accounts INNER JOIN accountUsers on accounts.account_number = accountUsers.account_number INNER JOIN users ON users.user_id = accountUsers.user_id AND users.user_pin ='"+userPojo.getUserPin()+"'WHERE accountUsers.user_id=(SELECT user_id FROM sessions WHERE session_number=(SELECT MAX (session_number) FROM sessions)) AND accounts.account_number='"+accountPojo.getAccountNumber()+"'";
+			ResultSet resultSet = stmt.executeQuery(query);
+			if(resultSet.next()) {
+				if (resultSet.getDouble(3) != 0) {
+					throw new BalanceNotEmptyException();
+				}
+				String query2 = "INSERT INTO inactive_accounts(account_number, account_type, access_code) VALUES("+ resultSet.getInt(1) + ", '" + resultSet.getString(2) + "', '" + resultSet.getInt(4) +"')";
+				String query3 = "DELETE FROM accounts WHERE account_number=" + resultSet.getInt(1) + "";
+				//conn.setAutoCommit(false);
+				int rowsAffected2 = stmt.executeUpdate(query2);
+				int rowsAffected3 = stmt.executeUpdate(query3);
+				//conn.commit();
+				if (rowsAffected2 == 1 && rowsAffected3 == 1) {
+					success = true;
+				}
+			}
+		} catch (SQLException e) {
+			//conn.rollback();
+			throw new SQLException();
+		}
+
+		return success;
+	}
+	
+	//allows a user to join an existing bank account as a joint account holder; user needs own login credentials and PIN 
+	//as well as the access code given to the original account owner at time of account creation
+	public AccountPojo linkToAccount(AccountPojo accountPojo, UserPojo userPojo) throws SQLException, SystemException {
+		Connection conn = null;
+		boolean success = false;
+		AccountPojo returnedAccountPojo = new AccountPojo();
+		try {
+			conn = DBUtil.makeConnection();
+			Statement stmt = conn.createStatement();
+			String query = "INSERT INTO accountUsers(account_number, user_id) VALUES((SELECT account_number FROM accounts WHERE accounts.account_number="+accountPojo.getAccountNumber()+" AND accounts.access_code="+accountPojo.getAccessCode()+"), (SELECT user_id FROM users WHERE user_pin="+userPojo.getUserPin()+" AND user_id=(SELECT user_id FROM sessions WHERE session_number = (SELECT MAX(session_number) FROM sessions))))";
+			int rowsAffected = stmt.executeUpdate(query);
+			if(rowsAffected == 1) {
+				String query2 = "SELECT * FROM accounts WHERE account_number="+accountPojo.getAccountNumber()+"";
+				ResultSet resultSet = stmt.executeQuery(query2);
+				resultSet.next();
+				returnedAccountPojo.setAccountNumber(resultSet.getInt(1));
+				returnedAccountPojo.setAccountType(resultSet.getString(2));
+				returnedAccountPojo.setAccessCode(resultSet.getInt(4));
+			}
+		} catch (SQLException e) {
+			throw new SQLException();
+		} 
+		return returnedAccountPojo;
 	}
 	
 }

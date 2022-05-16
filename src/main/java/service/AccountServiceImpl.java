@@ -1,9 +1,12 @@
 package service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import dao.AccountDao;
 import dao.AccountDaoDatabaseImpl;
+import exception.BalanceNotEmptyException;
+import exception.SystemException;
 import model.AccountPojo;
 import model.UserPojo;
 
@@ -26,5 +29,13 @@ public class AccountServiceImpl implements AccountService {
 	
 	public AccountPojo getOneAccount(int accountNumber) {
 		return accountDao.getOneAccount(accountNumber);
+	}
+	
+	public boolean closeBankAccount(AccountPojo accountPojo, UserPojo userPojo) throws SystemException, SQLException, BalanceNotEmptyException {
+		return accountDao.closeBankAccount(accountPojo, userPojo);
+	}
+	
+	public AccountPojo linkToAccount(AccountPojo accountPojo, UserPojo userPojo) throws SQLException, SystemException {
+		return accountDao.linkToAccount(accountPojo, userPojo);
 	}
 }

@@ -5,6 +5,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
+import exception.BalanceBelowZeroException;
+import exception.BalanceNotEmptyException;
+import exception.EmptyListException;
+import exception.OnlyOneAccountException;
 import exception.SystemException;
 import model.AccountPojo;
 import model.AccountUsersPojo;
@@ -135,7 +139,7 @@ public class AutoBankSystem {
 		 AccountPojo returnedAccountPojo = null;
 		 
 		 //create new bankaccount
-		 
+		 /*
 		 System.out.println("Enter new account type(checking or savings)");
 		 //use switch statement to validate choice: 1 = checking, 2 = savings, else=not a valid choice, choose again
 		 newAccountPojo.setAccountType(scan.nextLine());
@@ -143,7 +147,7 @@ public class AutoBankSystem {
 		 newAccountPojo.setAccessCode(scan.nextInt()); 
 		 boolean creation = accountService.addAccount(newAccountPojo);
 		 System.out.println("Acount creation was: " + creation);
-		
+		*/
 		
 		// get all accounts
 		/*
@@ -161,7 +165,52 @@ public class AutoBankSystem {
 		getAccountPojo = accountService.getOneAccount(accountnumber);
 		System.out.println("Account Number:" + getAccountPojo.getAccountNumber());
 		 */
+		 
+		// close bank account
+		 /*
+		System.out.println("Enter PIN");
+		newUserPojo.setUserPin(scan.nextInt());
+		System.out.println("Enter account number to be closed");
+		newAccountPojo.setAccountNumber(scan.nextInt());
+		boolean success = false;
+		try {
+			success = accountService.closeBankAccount(newAccountPojo, newUserPojo);
+		} catch (BalanceNotEmptyException b) {
+			System.out.println(b.getMessage());
+		} catch (SQLException s) {
+			s.printStackTrace();
+		} catch (SystemException e) {
+			System.out.println(e.getMessage());
+		} finally {
+			if (success) {
+				System.out.println("success");
+			} else {
+				System.out.println("fail");
+			}
+		}
+		*/
 		
+		//link to existing account
+		 /*
+		 System.out.println("Enter account to link to");
+		 newAccountPojo.setAccountNumber(scan.nextInt());
+		 scan.nextLine();
+		 System.out.println("Enter access code");
+		 newAccountPojo.setAccessCode(scan.nextInt());
+		 scan.nextLine();
+		 System.out.println("Enter your PIN");
+		 newUserPojo.setUserPin(scan.nextInt());
+		 AccountPojo returnedAccPojo = null;
+		 try {
+			returnedAccPojo = accountService.linkToAccount(newAccountPojo, newUserPojo);
+		 } catch (SQLException s) {
+				s.printStackTrace();
+			} catch (SystemException e) {
+				System.out.println(e.getMessage());
+			} 
+		 System.out.println("You are now linked to " + returnedAccPojo.getAccountType()+" account number: "+returnedAccPojo.getAccessCode());
+		*/
+		 
 		// ACCOUNTUSERS METHODS
 		
 		AccountUsersService accountUsersService = new AccountUsersServiceImpl();
@@ -252,7 +301,90 @@ public class AutoBankSystem {
 		theTransactionsByAccNo.forEach((item) -> System.out.println(item.getTransactionNumber() + "\t" + item.getAccountNumber() + "\t"
 				+ item.getTime() + "\t" + item.getTransactionType() + "\t" + item.getTransactionAmount() + "\t" + item.getUpdatedBalance() + "\t" + item.getTargetAccNo()+"\t"+item.getTargetRoutNo()));
 		*/
-
+		
+		//make deposit (user)
+		/*
+		System.out.println("Enter account number");
+		newTransactionPojo.setAccountNumber(scan.nextInt());
+		System.out.println("Enter transaction amount");
+		newTransactionPojo.setTransactionAmount(scan.nextDouble());
+		System.out.println("Enter source account number");
+		newTransactionPojo.setTargetAccNo(scan.nextInt());
+		System.out.println("enter source routing number");
+		newTransactionPojo.setTargetRoutNo(scan.nextInt());
+		newTransactionPojo.setTime(new Date().toString());
+		returnedTransactionPojo = transactionService.makeDeposit(newTransactionPojo);
+		*/
+		
+		/*
+		//make withdrawal (user)
+		System.out.println("Enter account number");
+		newTransactionPojo.setAccountNumber(scan.nextInt());
+		System.out.println("Enter transaction amount");
+		newTransactionPojo.setTransactionAmount(scan.nextDouble());
+		System.out.println("Enter source account number");
+		newTransactionPojo.setTargetAccNo(scan.nextInt());
+		System.out.println("enter source routing number");
+		newTransactionPojo.setTargetRoutNo(scan.nextInt());
+		newTransactionPojo.setTime(new Date().toString());
+		try {
+			returnedTransactionPojo = transactionService.makeWithdrawal(newTransactionPojo);
+		} catch (BalanceBelowZeroException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
+		
+		//view balance (user)
+		/*
+		System.out.println("Enter account number");
+		newTransactionPojo.setAccountNumber(scan.nextInt());
+		returnedTransactionPojo = transactionService.viewBalance(newTransactionPojo);
+		System.out.println(returnedTransactionPojo.getUpdatedBalance());
+		*/
+		
+		//transfer funds (user)
+		/*
+		System.out.println("Enter transaction amount");
+		newTransactionPojo.setTransactionAmount(scan.nextDouble());
+		System.out.println("Enter account number of account you are transfering funds from:");
+		newTransactionPojo.setTargetAccNo(scan.nextInt());
+		System.out.println("enter account number of account you are transfering funds to:");
+		newTransactionPojo.setTargetRoutNo(scan.nextInt());
+		newTransactionPojo.setTime(new Date().toString());
+		try {
+			returnedTransactionPojo = transactionService.transferFunds(newTransactionPojo);
+		} catch (OnlyOneAccountException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BalanceBelowZeroException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Funds transfered.");
+		*/
+		
+		//view transaction history
+		System.out.println("Enter account number that you would like to see transactions for");
+		newTransactionPojo.setAccountNumber(scan.nextInt());
+		List<TransactionPojo> resultList = null;
+		try {
+			resultList = transactionService.getTransactionsForOneAccNo(newTransactionPojo);
+		} catch (EmptyListException e) {
+			System.out.println(e.getMessage());
+		} catch (SystemException e) {
+			System.out.println(e.getMessage());
+		}
+		System.out.println("***************************************************************************************");
+		System.out.println("ID\tNAME\tDESCRIPTION\t\t\tCOST");
+		System.out.println("***************************************************************************************");
+		resultList.forEach((item) -> System.out.println(item.getTransactionNumber() + "\t" + item.getAccountNumber() + "\t" + item.getTransactionType() + "\t" + item.getTransactionAmount()+ "\t" + item.getUpdatedBalance()+ "\t" + item.getTime()+ "\t" + item.getTargetAccNo()+ "\t" + item.getTargetRoutNo()));
+		
+	
+		
 		// SESSION METHODS
 		SessionService sessionService = new SessionServiceImpl();
 		
@@ -261,8 +393,8 @@ public class AutoBankSystem {
 		/*
 		System.out.println("Enter new userId");
 		newSessionPojo.setUserId(scan.nextInt());
-		System.out.println("Enter new login time"); newSessionPojo.setLoginTime(new
-		Date().toString()); System.out.println("Enter new logout time");
+		System.out.println("Enter new login time"); 
+		
 		newSessionPojo.setLogoutTime(new Date().toString()); returnedSessionPojo =
 		sessionService.addSession(newSessionPojo);
 		System.out.println("Your user id is: " + returnedSessionPojo.getUserId());
