@@ -21,7 +21,8 @@ public class DBUtil {
 	static Connection makeConnection() throws SQLException {
 		//step 2
 		
-		String connectionUrl = "jdbc:postgresql://database-2.cjo1lsd4zbsb.us-west-2.rds.amazonaws.com:5432/autobank";
+		//String connectionUrl = "jdbc:postgresql://database-2.cjo1lsd4zbsb.us-west-2.rds.amazonaws.com:5432/autobank";
+		String connectionUrl = "jdbc:postgresql://localhost:5432/autobank";
 		String userName = "postgres";
 		String password = "zilpah987";
 		

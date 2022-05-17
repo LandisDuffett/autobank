@@ -5,6 +5,7 @@ import java.util.List;
 
 import dao.UserDao;
 import dao.UserDaoDatabaseImpl;
+import exception.NoAccountException;
 import exception.SystemException;
 import model.AccountPojo;
 import model.UserPojo;
@@ -30,12 +31,12 @@ public class UserServiceImpl implements UserService {
 			return userDao.getOneUser(userId);
 		}
 		
-		public UserPojo logIn(UserPojo userPojo) {
+		public UserPojo logIn(UserPojo userPojo)throws NoAccountException, SystemException {
 			return userDao.logIn(userPojo);
 		}
 		
-		public void logOut() {
-			
+		public UserPojo logOut(UserPojo userPojo) {
+			return userDao.logOut(userPojo);
 		}
 		
 		public UserPojo changePassword(UserPojo userPojo) {

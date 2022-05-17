@@ -8,6 +8,7 @@ import java.util.Scanner;
 import exception.BalanceBelowZeroException;
 import exception.BalanceNotEmptyException;
 import exception.EmptyListException;
+import exception.NoAccountException;
 import exception.OnlyOneAccountException;
 import exception.SystemException;
 import model.AccountPojo;
@@ -28,19 +29,591 @@ import service.UserServiceImpl;
 
 public class AutoBankSystem {
 
-	public static void main(String[] args) {
-
-		Scanner scan = new Scanner(System.in);
-
-		// USER METHODS
-
+	public static void main(String[] args) throws SystemException {
+		UserPojo newUserPojo = new UserPojo();
+		UserPojo returnedUserPojo = null;
+		AccountPojo newAccountPojo = new AccountPojo(); 
 		UserService userService = new UserServiceImpl();
 
+		Scanner scan = new Scanner(System.in);
+		char a = 'y';
+		while (a == 'y') {
+			System.out.println("Welcome to Bankbot!");
+			System.out.println("Select one of the options below:");
+			System.out.println("1. log in");
+			System.out.println("2. sign up");
+			int opt = scan.nextInt();
+			switch (opt) {
+			case 1:
+				System.out.println("Enter user name:");
+				scan.nextLine();
+				newUserPojo.setUserName(scan.nextLine());
+				System.out.println("Enter password:");
+				newUserPojo.setUserPassword(scan.nextLine());
+				try {
+					returnedUserPojo = userService.logIn(newUserPojo);
+					System.out.println("");
+					System.out.println("Welcome back, "+returnedUserPojo.getUserFirstName()+"!");
+				} catch (NoAccountException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SystemException e) {
+					// TODO Auto-generated catch block
+					System.out.println(e.getMessage());
+				}
+				break;
+			case 2:
+				System.out.println("Enter new user name");
+				scan.nextLine();
+				newUserPojo.setUserName(scan.nextLine());
+				System.out.println("Enter new password");
+				newUserPojo.setUserPassword(scan.nextLine());
+				System.out.println("Enter new user first name");
+				newUserPojo.setUserFirstName(scan.nextLine());
+				System.out.println("Enter new user last name");
+				newUserPojo.setUserLastName(scan.nextLine());
+				System.out.println("Enter new PIN"); 
+				newUserPojo.setUserPin(scan.nextInt());
+				returnedUserPojo = userService.addUser(newUserPojo);
+				System.out.println("Welcome, " + returnedUserPojo.getUserFirstName());
+				break;
+			}
+			
+			System.out.println("Welcome to Bankbot!");
+			System.out.println("*****************************************************");
+			System.out.println("1. Main menu");
+			System.out.println("2. Log out");
+			System.out.println("*****************************************************");
+			System.out.println("Please enter an option:");
+			a = 'n';
+			int option = scan.nextInt();
+			char b = 'y';
+			while (b == 'y') {
+				switch (option) {
+				case 1:
+					/*
+					System.out.println("Enter user name:");
+					scan.nextLine();
+					newUserPojo.setUserName(scan.nextLine());
+					System.out.println("Enter password:");
+					newUserPojo.setUserPassword(scan.nextLine());
+					try {
+						returnedUserPojo = userService.logIn(newUserPojo);
+						System.out.println("");
+						System.out.println("Welcome back, "+returnedUserPojo.getUserFirstName()+"!");
+					} catch (NoAccountException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SystemException e) {
+						// TODO Auto-generated catch block
+						System.out.println(e.getMessage());
+					}
+					*/
+					System.out.println("****************     MAIN MENU     ******************");
+					System.out.println("1. Manage user account");
+					System.out.println("2. Manage bank accounts");
+					System.out.println("3. Manage funds");
+					System.out.println("4. Log out");
+					System.out.println("*****************************************************");
+					System.out.println("Please enter an option:");
+					int foo = scan.nextInt();
+					switch (foo) {
+					case 1:
+						System.out.println("*********	     USER ACCOUNT MANAGEMENT	 *********");
+						System.out.println("1. Change password");
+						System.out.println("2. Recover password");
+						System.out.println("3. Remove user account");
+						System.out.println("4. Return to main menu");
+						System.out.println("5. Log out");
+						System.out.println("*****************************************************");
+						System.out.println("Please enter an option:");
+						int input = scan.nextInt();
+						switch (input) {
+						case 1:
+							System.out.println("*****************************************************");
+							System.out.println("Enter new password:");
+							scan.nextLine();
+							newUserPojo.setUserPassword(scan.nextLine());
+							System.out.println("Enter your 4-digit PIN:");
+							newUserPojo.setUserPin(scan.nextInt());
+							returnedUserPojo = userService.changePassword(newUserPojo);
+							System.out.println("New password is: " + returnedUserPojo.getUserPassword());
+							System.out.println("Your options are:");
+							System.out.println("Select 1 to continue your session (You will be taken to the main menu.");
+							System.out.println("Select 2 to log out.");
+							int wheretogo = scan.nextInt();
+							switch (wheretogo) {
+							case 1:
+								a = 'n';
+							case 2:
+								
+								userService.logOut(newUserPojo);
+								String input2 = scan.nextLine();
+								if(input2 != null) {
+									System.out.println("You are logged out...Goodbye.");
+									
+									//System.exit(a);
+								}
+								System.exit(a);
+							}
+							break;
+						case 2:
+							System.out.println("recover password");
+							System.out.println("*****************************************************");
+							System.out.println("4. Return to main menu");
+							System.out.println("5. Log out");
+							System.out.println("*****************************************************");
+							System.out.println("Please enter an option:");
+							System.out.println("*****************************************************");
+							a = 'n';
+							break;
+						case 3:
+							System.out.println("remove user account");
+							System.out.println("*****************************************************");
+							System.out.println("4. Return to main menu");
+							System.out.println("5. Log out");
+							System.out.println("*****************************************************");
+							System.out.println("Please enter an option:");
+							System.out.println("*****************************************************");
+							a = 'n';
+							break;
+						case 4:
+							System.out.println("return to main menu");
+							a = 'n';
+							break;
+						case 5:
+							System.out.println("log out");
+							System.out.println("*****************************************************");
+							System.out.println("4. Return to main menu");
+							System.out.println("*****************************************************");
+							System.out.println("Please enter an option:");
+							a = 'n';
+							break;
+						}
+						break;
+					case 2:
+						System.out.println("manage bank accounts");
+						System.out.println("*********	     USER ACCOUNT MANAGEMENT	 *********");
+						System.out.println("1. View all accounts");
+						System.out.println("2. Open new bank account");
+						System.out.println("3. Link to existing account");
+						System.out.println("4. Return to main menu");
+						System.out.println("5. Log out");
+						System.out.println("*****************************************************");
+						int input2 = scan.nextInt();
+						switch (input2) {
+						case 1:
+							System.out.println("view all accounts");
+							System.out.println("*****************************************************");
+							System.out.println("4. Return to main menu");
+							System.out.println("5. Log out");
+							System.out.println("*****************************************************");
+							System.out.println("Please enter an option:");
+							a = 'n';
+							break;
+						case 2:
+							System.out.println("open new bank account");
+							System.out.println("*****************************************************");
+							System.out.println("4. Return to main menu");
+							System.out.println("5. Log out");
+							System.out.println("*****************************************************");
+							System.out.println("Please enter an option:");
+							a = 'n';
+							break;
+						case 3:
+							System.out.println("link to existing account");
+							System.out.println("*****************************************************");
+							System.out.println("4. Return to main menu");
+							System.out.println("5. Log out");
+							System.out.println("*****************************************************");
+							System.out.println("Please enter an option:");
+							a = 'n';
+							break;
+						case 4:
+							System.out.println("return to main menu");
+							System.out.println("*****************************************************");
+							System.out.println("4. Return to main menu");
+							System.out.println("5. Log out");
+							System.out.println("*****************************************************");
+							System.out.println("Please enter an option:");
+							a = 'n';
+							break;
+						case 5:
+							System.out.println("log out");
+							System.out.println("*****************************************************");
+							System.out.println("4. Return to main menu");
+							System.out.println("5. Log out");
+							System.out.println("*****************************************************");
+							System.out.println("Please enter an option:");
+							a = 'n';
+							break;
+						}
+						break;
+					case 3:
+						System.out.println("*****************************************************");
+						System.out.println("1. Deposit funds");
+						System.out.println("2. Withdraw funds");
+						System.out.println("3. View account balance");
+						System.out.println("4. Transfer funds between accounts");
+						System.out.println("5. View transaction history");
+						System.out.println("6. Return to main menu");
+						System.out.println("7. Log out");
+						System.out.println("*****************************************************");
+						System.out.println("Please enter an option:");
+						int input3 = scan.nextInt();
+						switch (input3) {
+						case 1:
+							System.out.println("deposit funds");
+							a = 'n';
+							break;
+						case 2:
+							System.out.println("withdraw funds");
+							a = 'n';
+							break;
+						case 3:
+							System.out.println("view account balance");
+							a = 'n';
+							break;
+						case 4:
+							System.out.println("transfer funds");
+							a = 'n';
+							break;
+						case 5:
+							System.out.println("view transaction history");
+							a = 'n';
+							break;
+						case 6:
+							System.out.println("return to main menu");
+							a = 'n';
+							break;
+						case 7:
+							System.out.println("log outy");
+							a = 'n';
+							break;
+						}
+						break;
+					case 4:
+						System.out.println("user account menu");
+						System.out.println("Enter 1 to return to main menu ");
+						int input4 = scan.nextInt();
+						switch (input4) {
+						case 1:
+							System.out.println("change password");
+							a = 'n';
+							break;
+						case 2:
+							System.out.println("recover password");
+							a = 'n';
+							break;
+						case 3:
+							System.out.println("remove user account");
+							a = 'n';
+							break;
+						case 4:
+							System.out.println("return to main menu");
+							a = 'n';
+							break;
+						case 5:
+							System.out.println("log lout");
+							a = 'n';
+							break;
+						}
+						break;
+					}
+					break;
+				case 2:
+					System.out.println("two");
+					b = 'n';
+					break;
+				}
+			}
+		}
+	}
+}
+/*
+		
+		
+			Scanner scan = new Scanner(System.in);
+			char a = 'y';
+			while (a == 'y') {
+			System.out.println("*****************************************************");
+			String line =
+			"######                       ######\n"+               
+			"#     #   ##   #    # #    # #     #  ####  #####\n"+ 
+			"######  #    # # #  # ####   ######  #    #   #\n"+   
+			"#     # ###### #  # # #  #   #     # #    #   #\n"+   
+			"#     # #    # #   ## #   #  #     # #    #   #\n"+   
+			"######  #    # #    # #    # ######   ####    #\n";
+			System.out.println();
+			System.out.println(line);
+			System.out.println("ONLINE BANK ACCOUNT MANAGEMENT SYSTEM FROM LandisWare");;
+			System.out.println();
+			System.out.println("*****************************************************");
+			System.out.println("1. Log in");
+			System.out.println("2. Sign up");
+			System.out.println("*****************************************************");
+			System.out.println("Please enter an option:");
+			int option = scan.nextInt();
+			char b = 'y';
+			while (b == 'y') {
+			switch(option) {
+			case 1:
+				System.out.println("Enter user name:");
+				scan.nextLine();
+				newUserPojo.setUserName(scan.nextLine());
+				System.out.println("Enter password:");
+				newUserPojo.setUserPassword(scan.nextLine());
+				try {
+					returnedUserPojo = userService.logIn(newUserPojo);
+					System.out.println("");
+					System.out.println("Welcome back, "+returnedUserPojo.getUserFirstName()+"!");
+				} catch (NoAccountException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SystemException e) {
+					// TODO Auto-generated catch block
+					System.out.println(e.getMessage());
+				}
+				
+				System.out.println("");
+				System.out.println("****************     MAIN MENU     ******************");
+				System.out.println("1. Manage user account");
+				System.out.println("2. Manage bank accounts");
+				System.out.println("3. Manage funds");
+				System.out.println("4. Log out");
+				System.out.println("*****************************************************");
+				System.out.println("Please enter an option:");
+				int option2 = scan.nextInt();
+				switch (option2) {
+				case 1:
+					// b = 'y';
+					// break;
+					System.out.println("*********	     USER ACCOUNT MANAGEMENT	 *********");
+					System.out.println("1. Change password");
+					System.out.println("2. Recover password");
+					System.out.println("3. Remove user account");
+					System.out.println("4. Return to main menu");
+					System.out.println("5. Log out");
+					System.out.println("*****************************************************");
+					System.out.println("Please enter an option:");
+					int option3 = scan.nextInt();
+					char d = 'y';
+					while (d == 'y') {
+					switch (option3) {
+					case 1:
+						System.out.println("*****************************************************");
+						System.out.println("Enter a new password:");
+						scan.nextLine();
+						newUserPojo.setUserPassword(scan.nextLine());
+						System.out.println("Enter your 4-digit PIN:");
+						newUserPojo.setUserPin(scan.nextInt());
+						returnedUserPojo = userService.changePassword(newUserPojo);
+						System.out.println("Your new password is: " + returnedUserPojo.getUserPassword());
+						System.out.println("");
+						System.out.println("Your options are:");
+						System.out.println("Press 1 to continue your session.");
+						System.out.println("Press 2 to log out.");
+						
+						int wheretogo = scan.nextInt();
+						switch (wheretogo) {
+						case 1:
+							b = 'n';
+						case 2:
+							userService.logOut(newUserPojo);
+						}
+						scan.nextLine();
+						String mainmenu = scan.nextLine();
+						if (mainmenu != null) {
+							b = 'n';
+						}
+						break;
+					case 2:
+						System.out.println("recover password");
+						System.out.println("*****************************************************");
+						System.out.println("4. Return to main menu");
+						System.out.println("5. Log out");
+						System.out.println("*****************************************************");
+						System.out.println("Please enter an option:");
+						System.out.println("*****************************************************");
+						break;
+					case 3:
+						//c = 'y';
+						System.out.println("remove user account");
+						System.out.println("*****************************************************");
+						System.out.println("4. Return to main menu");
+						System.out.println("5. Log out");
+						System.out.println("*****************************************************");
+						System.out.println("Please enter an option:");
+						System.out.println("*****************************************************");
+						break;
+					case 4:
+						System.out.println("yes");
+						b = 'n';
+						break;
+					case 5:
+						//c = 'y';
+						System.out.println("log out");
+						System.out.println("*****************************************************");
+						System.out.println("4. Return to main menu");
+						System.out.println("*****************************************************");
+						System.out.println("Please enter an option:");
+						
+						break;
+					}
+					break;
+					}
+				case 2:
+					System.out.println("manage bank accounts");
+					System.out.println("*********	     USER ACCOUNT MANAGEMENT	 *********");
+					System.out.println("1. View all accounts");
+					System.out.println("2. Open new bank account");
+					System.out.println("3. Link to existing account");
+					System.out.println("4. Return to main menu");
+					System.out.println("5. Log out");
+					System.out.println("*****************************************************");
+					
+					int option4 = scan.nextInt();
+					switch (option4) {
+					case 1:
+						b = 'y';
+						System.out.println("view all accounts");
+						System.out.println("*****************************************************");
+						System.out.println("4. Return to main menu");
+						System.out.println("5. Log out");
+						System.out.println("*****************************************************");
+						System.out.println("Please enter an option:");
+						
+						break;
+					case 2:
+						b = 'y';
+						System.out.println("open new bank account");
+						System.out.println("*****************************************************");
+						System.out.println("4. Return to main menu");
+						System.out.println("5. Log out");
+						System.out.println("*****************************************************");
+						System.out.println("Please enter an option:");
+						
+						break;
+					case 3:
+						b = 'y';
+						System.out.println("link to existing account");
+						System.out.println("*****************************************************");
+						System.out.println("4. Return to main menu");
+						System.out.println("5. Log out");
+						System.out.println("*****************************************************");
+						System.out.println("Please enter an option:");
+						
+						break;
+					case 4:
+						b = 'n';
+						System.out.println("return to main menu");
+						System.out.println("*****************************************************");
+						System.out.println("4. Return to main menu");
+						System.out.println("5. Log out");
+						System.out.println("*****************************************************");
+						System.out.println("Please enter an option:");
+						
+						break;
+					case 5:
+						b = 'y';
+						System.out.println("log out");
+						System.out.println("*****************************************************");
+						System.out.println("4. Return to main menu");
+						System.out.println("5. Log out");
+						System.out.println("*****************************************************");
+						System.out.println("Please enter an option:");
+						
+						break;
+					}
+					b = 'y';
+					break;
+				case 3:
+					System.out.println("*****************************************************");
+					System.out.println("1. Deposit funds");
+					System.out.println("2. Withdraw funds");
+					System.out.println("3. View account balance");
+					System.out.println("4. Transfer funds between accounts");
+					System.out.println("5. View transaction history");
+					System.out.println("6. Return to main menu");
+					System.out.println("7. Log out");
+					System.out.println("*****************************************************");
+					System.out.println("Please enter an option:");
+					int option5 = scan.nextInt();
+					switch (option5) {
+					case 1:
+						System.out.println("deposit funds");
+						System.out.println("*****************************************************");
+						System.out.println("4. Return to main menu");
+						System.out.println("5. Log out");
+						System.out.println("*****************************************************");
+						System.out.println("Please enter an option:");
+						
+						break;
+					case 2:
+						System.out.println("withdraw funds");
+						System.out.println("*****************************************************");
+						System.out.println("4. Return to main menu");
+						System.out.println("5. Log out");
+						System.out.println("*****************************************************");
+						System.out.println("Please enter an option:");
+						
+						break;
+					case 3:
+						System.out.println("view account balance");
+						System.out.println("*****************************************************");
+						System.out.println("4. Return to main menu");
+						System.out.println("5. Log out");
+						System.out.println("*****************************************************");
+						System.out.println("Please enter an option:");
+						
+						break;
+					case 4:
+						
+						System.out.println("transfer funds between accounts");
+						System.out.println("*****************************************************");
+						System.out.println("4. Return to main menu");
+						System.out.println("5. Log out");
+						System.out.println("*****************************************************");
+						System.out.println("Please enter an option:");
+						
+						break;
+					case 5:
+						System.out.println("view transaction history");
+						break;
+					case 6:
+						System.out.println("return to main menu");
+						break;
+					case 7:
+						System.out.println("log out");
+						break;
+					}
+					b = 'y';
+					break;
+				case 4:
+					System.out.println("ma");
+					b = 'n';
+					break;
+				}
+				break;
+				}
+			/*
+			case 2:
+				System.out.println("sign up");
+				b = 'n';
+				break;
+				*/
+	/*
+			}
+		}
+	}
+}
+*/
+		
+	/*
 		UserPojo newUserPojo = new UserPojo();
 		UserPojo returnedUserPojo = null;
 		AccountPojo newAccountPojo = new AccountPojo(); 
 
-		/*
 		//create new useraccount 
 		System.out.println("Enter new user name");
 		newUserPojo.setUserName(scan.nextLine());
@@ -75,7 +648,7 @@ public class AutoBankSystem {
 		*/
 		
 		//log in
-		
+		/*
 		System.out.println("Enter user name");
 		newUserPojo.setUserName(scan.nextLine());
 		System.out.println("Enter password");
@@ -90,7 +663,7 @@ public class AutoBankSystem {
 		String input = scan.nextLine();
 		if(input != null) {
 			System.out.println("You are logged out...Goodbye.");
-			userService.logOut();
+			userService.logOut(newUserPojo);
 		}
 		*/
 		//change password
@@ -128,9 +701,10 @@ public class AutoBankSystem {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
-		*/
+		
 		
 		// ACCOUNT METHODS
 		
@@ -212,7 +786,7 @@ public class AutoBankSystem {
 		*/
 		 
 		// ACCOUNTUSERS METHODS
-		
+		/*
 		AccountUsersService accountUsersService = new AccountUsersServiceImpl();
 		
 		AccountUsersPojo newAccountUsersPojo = new AccountUsersPojo();
@@ -253,7 +827,7 @@ public class AutoBankSystem {
 		*/
 		
 		// TRANSACTION METHODS
-		
+		/*
 		TransactionService transactionService = new TransactionServiceImpl();
 		 
 		TransactionPojo newTransactionPojo = new TransactionPojo(); TransactionPojo
@@ -368,6 +942,7 @@ public class AutoBankSystem {
 		*/
 		
 		//view transaction history
+		/*
 		System.out.println("Enter account number that you would like to see transactions for");
 		newTransactionPojo.setAccountNumber(scan.nextInt());
 		List<TransactionPojo> resultList = null;
@@ -382,10 +957,11 @@ public class AutoBankSystem {
 		System.out.println("ID\tNAME\tDESCRIPTION\t\t\tCOST");
 		System.out.println("***************************************************************************************");
 		resultList.forEach((item) -> System.out.println(item.getTransactionNumber() + "\t" + item.getAccountNumber() + "\t" + item.getTransactionType() + "\t" + item.getTransactionAmount()+ "\t" + item.getUpdatedBalance()+ "\t" + item.getTime()+ "\t" + item.getTargetAccNo()+ "\t" + item.getTargetRoutNo()));
-		
+		*/
 	
 		
 		// SESSION METHODS
+		/*
 		SessionService sessionService = new SessionServiceImpl();
 		
 		SessionPojo newSessionPojo = new SessionPojo(); 
@@ -417,6 +993,5 @@ public class AutoBankSystem {
 		theSessionsByUser.forEach((item) -> System.out.println(item.getSessionNumber() + "\t" + item.getUserId() + "\t"
 				+ item.getLoginTime() + "\t" + item.getLogoutTime()));	
 		*/	 
-	}
-	
-}
+
+

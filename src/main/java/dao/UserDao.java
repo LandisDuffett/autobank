@@ -3,6 +3,8 @@ package dao;
 import java.sql.SQLException;
 import java.util.List;
 
+import exception.NoAccountException;
+import exception.SystemException;
 import model.AccountPojo;
 import model.UserPojo;
 
@@ -14,9 +16,9 @@ public interface UserDao {
 	
 	UserPojo getOneUser(int userId);
 	
-	UserPojo logIn(UserPojo userPojo);
+	UserPojo logIn(UserPojo userPojo)throws NoAccountException, SystemException;
 	
-	void logOut();
+	UserPojo logOut(UserPojo userPojo);
 	
 	UserPojo changePassword(UserPojo userPojo);
 	
