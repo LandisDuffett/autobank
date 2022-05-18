@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.List;
 
 import exception.NoAccountException;
@@ -20,7 +21,7 @@ import service.SessionServiceImpl;
 
 public class UserDaoDatabaseImpl implements UserDao {
 
-	public UserPojo addUser(UserPojo userPojo) {
+	public UserPojo addUser(UserPojo userPojo)throws SystemException, SQLException {
 
 		Connection conn;
 
@@ -37,7 +38,7 @@ public class UserDaoDatabaseImpl implements UserDao {
 			int rowsAffected = stmt.executeUpdate(query);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new SQLException();
 		}
 
 		return userPojo;
@@ -106,15 +107,20 @@ public class UserDaoDatabaseImpl implements UserDao {
 		try {
 			conn = DBUtil.makeConnection();
 			Statement stmt = conn.createStatement();
+			//String query = "SELECT * FROM users";
 			String query = "SELECT * FROM users WHERE user_name='" + userPojo.getUserName() + "' AND user_password='"
 					+ userPojo.getUserPassword() + "'";
 			ResultSet resultSet = stmt.executeQuery(query);
-			if (resultSet.next() && resultSet.getInt(1) != 0) {
+			if (resultSet.next() && (resultSet.getInt(1) != 0)) {
+				System.out.println("hello0");
 				userPojo = new UserPojo(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
 						resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getInt(7));
 				sessionPojo.setUserId(userPojo.getUserId());
 				sessionPojo.setLoginTime(new Date().toString());
+				System.out.println("hello1");
 				sessionService.addSession(sessionPojo);
+				System.out.println("hello2");
+				
 			} else {
 				throw new SystemException();
 			}
@@ -130,9 +136,11 @@ public class UserDaoDatabaseImpl implements UserDao {
 		Connection conn=null;
 		try {
 			conn = DBUtil.makeConnection();
+			System.out.println("hello999");
 			Statement stmt = conn.createStatement();
 			String query = "SELECT * FROM sessions WHERE session_number = (SELECT MAX(session_number) from sessions)";
 			ResultSet resultSet = stmt.executeQuery(query);
+			
 			resultSet.next();
 			// String query2 = "UPDATE sessions SET logout_time='"+new Date().toString()+"'
 			// WHERE user_id="+resultSet.getInt(2)+"";
@@ -155,10 +163,14 @@ public class UserDaoDatabaseImpl implements UserDao {
 		try {
 			conn = DBUtil.makeConnection();
 			Statement stmt = conn.createStatement();
-			String query = "UPDATE users SET user_password='" + userPojo.getUserPassword()
+			String query = "SELECT user_pin FROM users WHERE user_id=(SELECT user_id FROM sessions WHERE session_number =(SELECT MAX (session_number) FROM sessions))";
+			ResultSet resultSet = stmt.executeQuery(query);
+			if(resultSet.next()) {
+			String query2 = "UPDATE users SET user_password='" + userPojo.getUserPassword()
 					+ "' WHERE user_id=(SELECT user_id FROM sessions WHERE session_number=(SELECT MAX (session_number) FROM sessions)) AND user_pin="
-					+ userPojo.getUserPin() + "";
-			stmt.executeUpdate(query);
+					+ resultSet.getInt(1) + "";
+			stmt.executeUpdate(query2);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

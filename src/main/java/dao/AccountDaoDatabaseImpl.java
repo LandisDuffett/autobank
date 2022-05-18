@@ -52,16 +52,24 @@ public class AccountDaoDatabaseImpl implements AccountDao {
 		List<AccountPojo> allAccounts = new ArrayList<AccountPojo>();
 
 		Connection conn;
+		
+		System.out.println("hellofrom 59");
 
 		try {
 			conn = DBUtil.makeConnection();
+			
+			UserPojo newUserPojo = new UserPojo();
 
 			Statement stmt = conn.createStatement();
 
-			String query = "SELECT * FROM accounts";
-
+			String query1 = "SELECT user_id FROM sessions WHERE session_number = (SELECT MAX(session_number) FROM sessions)";
+			ResultSet resultSet1 = stmt.executeQuery(query1);
+			resultSet1.next();
+			String query = "SELECT * FROM accounts INNER JOIN accountUsers ON accountUsers.account_number = accounts.account_number WHERE accountUsers.user_id="+resultSet1.getInt(1)+"";
 			ResultSet resultSet = stmt.executeQuery(query);
-
+			//resultSet.next();
+			//System.out.println("hel");
+			//System.out.println(resultSet.getInt(1) + " " + resultSet.getString(2) + " " + resultSet.getDouble(3) + " " +resultSet.getInt(4));
 			int counter = 0;
 
 			while (resultSet.next()) {
@@ -69,6 +77,7 @@ public class AccountDaoDatabaseImpl implements AccountDao {
 
 				AccountPojo accountPojo = new AccountPojo(resultSet.getInt(1), resultSet.getString(2), resultSet.getDouble(3),
 						resultSet.getInt(4));
+				System.out.println("hoo");
 				allAccounts.add(accountPojo);
 			}
 			/*
@@ -108,20 +117,38 @@ public class AccountDaoDatabaseImpl implements AccountDao {
 		try {
 			conn = DBUtil.makeConnection();
 			Statement stmt = conn.createStatement();
-			String query = "SELECT accounts.account_number, accounts.account_type, accounts.account_balance, accounts.access_code FROM accounts INNER JOIN accountUsers on accounts.account_number = accountUsers.account_number INNER JOIN users ON users.user_id = accountUsers.user_id AND users.user_pin ='"+userPojo.getUserPin()+"'WHERE accountUsers.user_id=(SELECT user_id FROM sessions WHERE session_number=(SELECT MAX (session_number) FROM sessions)) AND accounts.account_number='"+accountPojo.getAccountNumber()+"'";
+			System.out.println("zero");
+			String query = "SELECT users.user_id, users.user_pin, accounts.account_number, accounts.account_type, accounts.account_balance, accounts.access_code FROM accounts INNER JOIN accountUsers on accounts.account_number = accountUsers.account_number INNER JOIN users ON users.user_id = accountUsers.user_id AND users.user_pin ="+userPojo.getUserPin()+"WHERE accountUsers.user_id=(SELECT user_id FROM sessions WHERE session_number=(SELECT MAX (session_number) FROM sessions)) AND accounts.account_number="+accountPojo.getAccountNumber()+"";
 			ResultSet resultSet = stmt.executeQuery(query);
+			//resultSet.next();
+			//System.out.println(resultSet.getDouble(5));
 			if(resultSet.next()) {
-				if (resultSet.getDouble(3) != 0) {
+				System.out.println("zoo");
+				if (resultSet.getDouble(5) != 0) {
+					System.out.println("woo");
 					throw new BalanceNotEmptyException();
 				}
-				String query2 = "INSERT INTO inactive_accounts(account_number, account_type, access_code) VALUES("+ resultSet.getInt(1) + ", '" + resultSet.getString(2) + "', '" + resultSet.getInt(4) +"')";
-				String query3 = "DELETE FROM accounts WHERE account_number=" + resultSet.getInt(1) + "";
+				System.out.println("loo");
+				String query2 = "INSERT INTO inactive_accounts(account_number, account_type, access_code) VALUES("+ resultSet.getInt(3) + ", '" + resultSet.getString(4) + "', " + resultSet.getInt(6) +")";
+				System.out.println("boo");
+				String query3 = "DELETE FROM accounts WHERE account_number=" + resultSet.getInt(3) + "";
+				System.out.println("goo");
+				String query4 = "DELETE FROM accountUsers WHERE account_number=" + resultSet.getInt(3) + " AND user_id=" + resultSet.getInt(1)+"";
 				//conn.setAutoCommit(false);
+				System.out.println("moo");
 				int rowsAffected2 = stmt.executeUpdate(query2);
+				System.out.println("three");
 				int rowsAffected3 = stmt.executeUpdate(query3);
+				System.out.println("four");
+				int rowsAffected4 = stmt.executeUpdate(query4);
+				System.out.println("five");
+				//System.out.println(rowsAffected3);
+				//System.out.println(rowsAffected4);
 				//conn.commit();
-				if (rowsAffected2 == 1 && rowsAffected3 == 1) {
+				if (rowsAffected2 == 1 && rowsAffected3 == 1 && rowsAffected4 == 1) {
+				//if (rowsAffected3 == 1 && rowsAffected4 == 1) {
 					success = true;
+					
 				}
 			}
 		} catch (SQLException e) {
@@ -140,18 +167,22 @@ public class AccountDaoDatabaseImpl implements AccountDao {
 		AccountPojo returnedAccountPojo = new AccountPojo();
 		try {
 			conn = DBUtil.makeConnection();
+			System.out.println("goo");
 			Statement stmt = conn.createStatement();
-			String query = "INSERT INTO accountUsers(account_number, user_id) VALUES((SELECT account_number FROM accounts WHERE accounts.account_number="+accountPojo.getAccountNumber()+" AND accounts.access_code="+accountPojo.getAccessCode()+"), (SELECT user_id FROM users WHERE user_pin="+userPojo.getUserPin()+" AND user_id=(SELECT user_id FROM sessions WHERE session_number = (SELECT MAX(session_number) FROM sessions))))";
+			String query = "INSERT INTO accountUsers(account_number, user_id) VALUES((SELECT account_number FROM accounts WHERE access_code ="+accountPojo.getAccessCode()+"), (SELECT user_id FROM users WHERE user_pin = (SELECT user_pin FROM users WHERE user_id = (SELECT user_id FROM sessions WHERE session_number = (SELECT MAX (session_number) FROM sessions))) AND user_pin="+userPojo.getUserPin()+"))";
 			int rowsAffected = stmt.executeUpdate(query);
+			System.out.println("goo2");
 			if(rowsAffected == 1) {
 				String query2 = "SELECT * FROM accounts WHERE account_number="+accountPojo.getAccountNumber()+"";
 				ResultSet resultSet = stmt.executeQuery(query2);
 				resultSet.next();
 				returnedAccountPojo.setAccountNumber(resultSet.getInt(1));
 				returnedAccountPojo.setAccountType(resultSet.getString(2));
+				System.out.println("goo3");
 				returnedAccountPojo.setAccessCode(resultSet.getInt(4));
 			}
 		} catch (SQLException e) {
+			System.out.println("goo4");
 			throw new SQLException();
 		} 
 		return returnedAccountPojo;

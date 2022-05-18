@@ -114,10 +114,10 @@ public class TransactionDaoDatabaseImpl implements TransactionDao {
 				throw new EmptyListException();
 			}
 			
-			String query = "SELECT * FROM transactions INNER JOIN accountUsers on transactions.account_number = accountUsers.account_number WHERE accountUsers.account_number ="+transactionPojo.getAccountNumber()+" AND accountUsers.user_id=(SELECT user_id FROM sessions WHERE session_number =(SELECT MAX(session_number) FROM sessions))";
+			String query = "SELECT transaction_number, transactions.account_number, transaction_type, ROUND(CAST(transaction_amount AS numeric),2), ROUND(CAST(updated_balance AS numeric),2), time, target_accno, target_routno FROM transactions INNER JOIN accountUsers on transactions.account_number = accountUsers.account_number WHERE accountUsers.account_number ="+transactionPojo.getAccountNumber()+" AND accountUsers.user_id=(SELECT user_id FROM sessions WHERE session_number =(SELECT MAX(session_number) FROM sessions))";
 
 			ResultSet resultSet = stmt.executeQuery(query);
-
+			
 			int counter = 0;
 
 			while (resultSet.next()) {
@@ -217,7 +217,7 @@ public class TransactionDaoDatabaseImpl implements TransactionDao {
 
 			Statement stmt = conn.createStatement();
 			
-			String query = "SELECT accounts.account_balance FROM accounts INNER JOIN accountUsers ON accounts.account_number=accountUsers.account_number INNER JOIN users ON accountUsers.user_id = users.user_id WHERE accounts.account_number ="+transactionPojo.getAccountNumber()+" AND users.user_id = (SELECT user_id FROM sessions WHERE session_number=(SELECT MAX(session_number) FROM sessions))";
+			String query = "SELECT ROUND(CAST(accounts.account_balance AS numeric), 2) FROM accounts INNER JOIN accountUsers ON accounts.account_number=accountUsers.account_number INNER JOIN users ON accountUsers.user_id = users.user_id WHERE accounts.account_number ="+transactionPojo.getAccountNumber()+" AND users.user_id = (SELECT user_id FROM sessions WHERE session_number=(SELECT MAX(session_number) FROM sessions))";
 			ResultSet resultSet = stmt.executeQuery(query);
 			if(resultSet.next()) {
 				transactionPojo.setUpdatedBalance(resultSet.getDouble(1));

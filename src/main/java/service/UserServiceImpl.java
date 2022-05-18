@@ -1,6 +1,7 @@
 package service;
 
 import java.sql.SQLException;
+import java.util.InputMismatchException;
 import java.util.List;
 
 import dao.UserDao;
@@ -19,7 +20,7 @@ public class UserServiceImpl implements UserService {
 			userDao = new UserDaoDatabaseImpl();
 		}
 		
-		public UserPojo addUser(UserPojo userPojo) {
+		public UserPojo addUser(UserPojo userPojo) throws SystemException, SQLException {
 			return userDao.addUser(userPojo);
 		}
 		

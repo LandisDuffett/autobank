@@ -1,6 +1,7 @@
 package service;
 
 import java.sql.SQLException;
+import java.util.InputMismatchException;
 import java.util.List;
 
 import exception.NoAccountException;
@@ -10,7 +11,7 @@ import model.UserPojo;
 
 public interface UserService {
 
-	UserPojo addUser(UserPojo userPojo);
+	UserPojo addUser(UserPojo userPojo) throws SystemException, SQLException;
 	
 	List<UserPojo> getAllUsers();
 	
