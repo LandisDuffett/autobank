@@ -24,14 +24,6 @@ public class UserServiceImpl implements UserService {
 			return userDao.addUser(userPojo);
 		}
 		
-		public List<UserPojo> getAllUsers(){
-			return userDao.getAllUsers();
-		}
-		
-		public UserPojo getOneUser(int userId) {
-			return userDao.getOneUser(userId);
-		}
-		
 		public UserPojo logIn(UserPojo userPojo)throws NoAccountException, SystemException {
 			return userDao.logIn(userPojo);
 		}

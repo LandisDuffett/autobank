@@ -13,9 +13,7 @@ public interface AccountService {
 	boolean addAccount(AccountPojo accountPojo);
 	
 	List<AccountPojo> getAllAccounts();
-	
-	AccountPojo getOneAccount(int accountNumber);
-	
+		
 	boolean closeBankAccount(AccountPojo accountPojo, UserPojo userPojo) throws SystemException, SQLException, BalanceNotEmptyException;
 	
 	AccountPojo linkToAccount(AccountPojo accountPojo, UserPojo userPojo) throws SQLException, SystemException;

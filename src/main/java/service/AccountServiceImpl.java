@@ -27,10 +27,6 @@ public class AccountServiceImpl implements AccountService {
 		return accountDao.getAllAccounts();
 	}
 	
-	public AccountPojo getOneAccount(int accountNumber) {
-		return accountDao.getOneAccount(accountNumber);
-	}
-	
 	public boolean closeBankAccount(AccountPojo accountPojo, UserPojo userPojo) throws SystemException, SQLException, BalanceNotEmptyException {
 		return accountDao.closeBankAccount(accountPojo, userPojo);
 	}

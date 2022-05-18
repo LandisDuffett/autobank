@@ -8,7 +8,4 @@ public interface SessionDao {
 
 	SessionPojo addSession(SessionPojo sessionPojo);
 	
-	List<SessionPojo> getAllSessions();
-	
-	List<SessionPojo> getSessionsForOneUser(int userId);
 }

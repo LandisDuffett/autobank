@@ -35,10 +35,21 @@ public class UserDaoDatabaseImpl implements UserDao {
 
 			int rowsAffected = stmt.executeUpdate(query);
 			
+			
 		} catch (SQLException e) {
 			
-			
 			throw new SQLException();
+			
+		} finally {
+			
+			try {
+				
+				logIn(userPojo);
+				
+			} catch (Exception e) {
+				
+				System.out.println("could not add");
+			}
 		}
 
 		return userPojo;
@@ -204,29 +215,61 @@ public class UserDaoDatabaseImpl implements UserDao {
 
 	
 	public boolean removeUserAccount(UserPojo userPojo) throws SQLException {
+		
 		Connection conn = null;
+		
 		boolean success = false;
+		
 		try {
+			
 			conn = DBUtil.makeConnection();
+			
 			Statement stmt = conn.createStatement();
+			
+			//logOut(userPojo);
+			
 			String query = "SELECT * FROM users WHERE user_pin=" + userPojo.getUserPin()
+			
 					+ " AND user_id=(SELECT user_id FROM sessions WHERE session_number=(SELECT MAX (session_number) FROM sessions))";
+			
 			ResultSet resultSet = stmt.executeQuery(query);
+			
 			if (resultSet.next()) {
+				
 				conn.setAutoCommit(false);
-				String query2 = "INSERT INTO inactive_users(user_id, user_name, user_password, user_type, user_firstname, user_lastname, user_pin) VALUES("+ resultSet.getInt(1) + ", '" + resultSet.getString(2) + "', '" + resultSet.getString(3) +"', '"+ resultSet.getString(4) + "', '" + resultSet.getString(5) + "', '" + resultSet.getString(6) + "', "+ resultSet.getInt(7) + ")";
+				
+				String query2 = "INSERT INTO inactive_users(user_id, user_name, user_password, user_type, user_firstname, user_lastname, user_pin) VALUES("
+						
+						+ resultSet.getInt(1) + ", '" + resultSet.getString(2) + "', '" + resultSet.getString(3)
+						
+						+ "', '" + resultSet.getString(4) + "', '" + resultSet.getString(5) + "', '"
+						
+						+ resultSet.getString(6) + "', " + resultSet.getInt(7) + ")";
+				
 				String query3 = "DELETE FROM users WHERE user_id=" + resultSet.getInt(1) + "";
+				
 				int rowsAffected2 = stmt.executeUpdate(query2);
+				
 				System.out.println("inserted into inactive users");
+				
 				int rowsAffected3 = stmt.executeUpdate(query3);
+				
 				conn.commit();
+				
 				if (rowsAffected2 == 1 && rowsAffected3 == 1) {
+					
 					success = true;
+					
 				}
+				
 			}
+			
 		} catch (SQLException e) {
+			
 			conn.rollback();
+			
 			throw new SQLException();
+			
 		}
 
 		return success;

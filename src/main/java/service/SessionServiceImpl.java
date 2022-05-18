@@ -18,12 +18,4 @@ SessionDao serviceDao;
 	public SessionPojo addSession(SessionPojo sessionPojo) {
 		return serviceDao.addSession(sessionPojo);
 	}
-	
-	public List<SessionPojo> getAllSessions() {
-		return serviceDao.getAllSessions();
-	}
-	
-	public List<SessionPojo> getSessionsForOneUser(int userId) {
-		return serviceDao.getSessionsForOneUser(userId);
-	}
 }
