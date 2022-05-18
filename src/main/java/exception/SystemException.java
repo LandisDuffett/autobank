@@ -4,7 +4,7 @@ public class SystemException extends Exception {
 
 	@Override
 	public String getMessage() {
-		return "There was an internal error! Please try again later!";
+		return "Something went wrong! Double check the data you entered or try again later.";
 	}
 
 }

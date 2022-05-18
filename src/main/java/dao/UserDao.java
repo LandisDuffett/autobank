@@ -12,11 +12,7 @@ import model.UserPojo;
 public interface UserDao {
 
 	UserPojo addUser(UserPojo userPojo) throws SystemException, SQLException;
-	
-	List<UserPojo> getAllUsers();
-	
-	UserPojo getOneUser(int userId);
-	
+			
 	UserPojo logIn(UserPojo userPojo)throws NoAccountException, SystemException;
 	
 	UserPojo logOut(UserPojo userPojo);
