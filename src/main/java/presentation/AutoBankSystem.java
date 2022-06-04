@@ -101,7 +101,7 @@ public class AutoBankSystem {
 			
 			} catch (Exception e) {
 				
-				System.out.println("invalid input: input must be 1 or 2");
+				System.out.println("invalid input: input must be 1, 2, or 3. Try again.");
 				
 				System.exit(a);
 				
@@ -199,7 +199,8 @@ public class AutoBankSystem {
 					
 				} catch (SQLException s) {
 					
-					System.out.println("Make sure your PIN is exactly four digits. Someone else might also already have that user name. Try again.");
+					System.out.println("Make sure your PIN is exactly four digits. Someone else might also already have that user name. "
+							+ "User name and password should each be fewer than 20 characters. Try again.");
 					
 					System.exit(a);
 					
@@ -234,7 +235,16 @@ public class AutoBankSystem {
 				
 				returnedUserPojo = userService.recoverPassword(newUserPojo, newAccountPojo);
 				
-				System.out.println("Your password is: " + returnedUserPojo.getUserPassword());
+				if (returnedUserPojo.getUserPassword() != null) {
+					
+					System.out.println("Your password is: " + returnedUserPojo.getUserPassword());
+
+				} else {
+					
+					System.out.println("No password matches the data you entered. Check your input data and try again.");
+					System.exit(a);
+				}
+				
 				
 				opt = 0;
 				
@@ -399,15 +409,17 @@ public class AutoBankSystem {
 								
 								if(success) {
 									
-									System.out.println("success");
+									System.out.println("user account deleted");
+									
+									System.out.println("You are logged out...Goodbye.");
+									
+									System.exit(a);
 									
 								} else {
 									
-									System.out.println("fail");
+									System.out.println("Failed to remove user account. Try again.");
 									
 								}
-								
-								System.out.println("You are logged out...Goodbye.");
 								
 							} catch (SQLException e) {
 								
@@ -417,7 +429,7 @@ public class AutoBankSystem {
 							
 						case 3:
 							
-							System.out.println("return to main menu");
+							//System.out.println("return to main menu");
 							
 							a = 'n';
 							
@@ -811,7 +823,7 @@ public class AutoBankSystem {
 							
 						case 6:
 							
-							System.out.println("return to main menu");
+							//System.out.println("return to main menu");
 							
 							a = 'n';
 							

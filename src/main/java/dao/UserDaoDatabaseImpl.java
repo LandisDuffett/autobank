@@ -249,7 +249,7 @@ public class UserDaoDatabaseImpl implements UserDao {
 				
 				int rowsAffected2 = stmt.executeUpdate(query2);
 				
-				System.out.println("inserted into inactive users");
+				//System.out.println("inserted into inactive users");
 				
 				int rowsAffected3 = stmt.executeUpdate(query3);
 				
