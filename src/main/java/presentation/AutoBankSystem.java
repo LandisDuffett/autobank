@@ -95,7 +95,7 @@ public class AutoBankSystem {
 				
 				System.out.println("Please enter an option:");
 				
-			opt = scan.nextInt();
+				opt = scan.nextInt();
 			
 			}
 			
@@ -212,6 +212,7 @@ public class AutoBankSystem {
 				break;
 				
 			case 3:
+				scan.nextLine();
 				
 				System.out.println("Enter your user name:");
 				

@@ -184,6 +184,7 @@ public class UserDaoDatabaseImpl implements UserDao {
 			
 			Statement stmt = conn.createStatement();
 			
+			/*
 			String query = "SELECT accountUsers.user_id, accounts.access_code FROM accountUsers INNER JOIN accounts ON accountUsers.account_number = accounts.account_number WHERE accounts.account_number ="
 					
 					+ accountPojo.getAccountNumber() + " AND accounts.access_code =" + accountPojo.getAccessCode()
@@ -191,18 +192,16 @@ public class UserDaoDatabaseImpl implements UserDao {
 					+ " AND user_id = (SELECT user_id FROM users WHERE user_name = 'william' AND user_pin ="
 					
 					+ userPojo.getUserPin() + ")";
+					*/
+			
+			String query = "SELECT user_password FROM users INNER JOIN accountUsers ON accountUsers.user_id = users.user_id INNER JOIN accounts ON accountUsers.account_number = accounts.account_number WHERE accounts.account_number = " + accountPojo.getAccountNumber() + "AND accounts.access_code = " + accountPojo.getAccessCode() + " AND users.user_id = (SELECT user_id FROM users WHERE user_name ='" + userPojo.getUserName() + "' AND user_pin =" + userPojo.getUserPin() + ")";
 			
 			ResultSet resultSet = stmt.executeQuery(query);
-			
-			resultSet.next();
-			
-			String query2 = "SELECT user_password FROM users where user_id =" + resultSet.getInt(1) + "";
-			
-			ResultSet resultSet2 = stmt.executeQuery(query2);
-
-			if (resultSet2.next()) {
+						
+			if(resultSet.next()) {
 				
-				userPojo.setUserPassword(resultSet2.getString(1));
+				userPojo.setUserPassword(resultSet.getString(1));
+				
 			}
 			
 		} catch (SQLException e) {
