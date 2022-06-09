@@ -245,7 +245,6 @@ public class AutoBankSystem {
 					System.exit(a);
 				}
 				
-				
 				opt = 0;
 				
 						try {
@@ -305,7 +304,19 @@ public class AutoBankSystem {
 			
 			a = 'n';
 			
-			int option = scan.nextInt();
+			int option = 0;
+			
+			try {
+				
+			option = scan.nextInt();
+			
+			}  catch (Exception e) {
+				
+				System.out.println("invalid input: input must be 1, 2, or 3. Try again.");
+				
+				System.exit(a);
+				
+			}
 			
 			char b = 'y';
 			
@@ -329,9 +340,21 @@ public class AutoBankSystem {
 					
 					System.out.println("Please enter an option:");
 					
-					int foo = scan.nextInt();
+					int entry = 0;
 					
-					switch (foo) {
+					try {
+					
+					entry = scan.nextInt();
+					
+					}  catch (Exception e) {
+						
+						System.out.println("invalid input: input must be 1, 2, 3, or 4. Try again.");
+						
+						System.exit(a);
+						
+					}
+					
+					switch (entry) {
 					
 					case 1:
 						
@@ -349,7 +372,19 @@ public class AutoBankSystem {
 						
 						System.out.println("Please enter an option:");
 						
-						int input = scan.nextInt();
+						int input = 0;
+						
+						try {
+						
+						input = scan.nextInt();
+						
+						}  catch (Exception e) {
+							
+							System.out.println("invalid input: input must be 1, 2, 3, or 4. Try again.");
+							
+							System.exit(a);
+							
+						}
 						
 						switch (input) {
 						
@@ -467,7 +502,19 @@ public class AutoBankSystem {
 						
 						System.out.println("*****************************************************");
 						
-						int input3 = scan.nextInt();
+						int input3 = 0;
+						
+						try {
+							
+						input3 = scan.nextInt();
+						
+						}  catch (Exception e) {
+							
+							System.out.println("invalid input: input must be 1, 2, 3, 4, 5, or 6. Try again.");
+							
+							System.exit(a);
+							
+						}
 						
 						switch (input3) {
 						
@@ -475,9 +522,13 @@ public class AutoBankSystem {
 							
 							List<AccountPojo> everyAccount;
 							
+							System.out.println("account no.     account type    balance");
+							
+							System.out.println("___________     _____________   ________");
+							
 							everyAccount = accountService.getAllAccounts();
 							
-							everyAccount.forEach((item) -> System.out.println(item.getAccountNumber() +"\t\t"+ item.getAccountType()+ "\t\t" + item.getAccountBalance() +"\t\t" + item.getAccessCode()));
+							everyAccount.forEach((item) -> System.out.println(item.getAccountNumber() +"\t\t"+ item.getAccountType()+ "\t\t" + item.getAccountBalance()));
 							
 							System.out.println("");
 							
@@ -495,7 +546,19 @@ public class AutoBankSystem {
 							 
 							 System.out.println("2. savings");
 							 
-							 int choose = scan.nextInt();
+							 int choose = 0;
+							 
+							 try {
+							 
+							 choose = scan.nextInt();
+							 
+							 }  catch (Exception e) {
+									
+									System.out.println("invalid input: input must be 1 or 2. Try again.");
+									
+									System.exit(a);
+									
+								}
 							 
 							 switch(choose) {
 							 
@@ -515,6 +578,7 @@ public class AutoBankSystem {
 							 
 							 System.out.println("Enter new acount access code:");
 							 
+							 try {
 							 newAccountPojo.setAccessCode(scan.nextInt()); 
 							 
 							 boolean creation = accountService.addAccount(newAccountPojo);
@@ -527,7 +591,13 @@ public class AutoBankSystem {
 								 
 								 System.out.println("account creation failed");
 								 
-							 }
+							 }}  catch (Exception e) {
+									
+									System.out.println("Accont creation failed. Make sure your access code is 4 digits long and consists only of numbers. Try again.");
+									
+									System.exit(a);
+									
+								}
 							
 							System.out.println("Enter any key to return to main menu.");
 							
@@ -542,6 +612,10 @@ public class AutoBankSystem {
 							break;
 							
 						case 3:
+							
+							 AccountPojo returnedAccPojo = new AccountPojo();
+
+							 try {
 							
 							 System.out.println("Enter account to link to:");
 							 
@@ -558,24 +632,30 @@ public class AutoBankSystem {
 							 System.out.println("Enter your PIN:");
 							 
 							 newUserPojo.setUserPin(scan.nextInt());
-							 
-							 AccountPojo returnedAccPojo = null;
-							 
-							 try {
-								 
-								returnedAccPojo = accountService.linkToAccount(newAccountPojo, newUserPojo);
+							 	 
+							returnedAccPojo = accountService.linkToAccount(newAccountPojo, newUserPojo);
 								
 							 } catch (SQLException s) {
 								 
-									s.printStackTrace();
+									System.out.println(s.getMessage());;
 									
-								} catch (SystemException e) {
+								}  catch (SystemException e) {
 									
 									System.out.println(e.getMessage());
 									
-								} 
+								}
 							 
-							 System.out.println("You are now linked to " + returnedAccPojo.getAccountType()+" account number: "+returnedAccPojo.getAccessCode());
+							 int result = returnedAccPojo.getAccountNumber();
+							 
+							 if (result > 0) {
+							 
+							 System.out.println("You are now linked to " + returnedAccPojo.getAccountType()+" account number: "+returnedAccPojo.getAccountNumber());
+							 
+							 } else {
+								 
+								 System.out.println("Something went wrong. Check the data you entered.");
+								 
+							 }
 							 
 							a = 'n';
 							
@@ -669,13 +749,27 @@ public class AutoBankSystem {
 						
 						System.out.println("Please enter an option:");
 						
-						int input4 = scan.nextInt();
+						int input4 = 0;
+						
+						try {
+						
+						input4 = scan.nextInt();
+						
+						}  catch (Exception e) {
+							
+							System.out.println("invalid input: input must be 1, 2, 3, 4, 5, 6, or 7. Try again.");
+							
+							System.exit(a);
+							
+						}
 						
 						switch (input4) {
 						
 						case 1:
 							
-							System.out.println("Enter account number");
+							try {
+							
+							System.out.println("Enter account number to deposit to");
 							
 							newTransactionPojo.setAccountNumber(scan.nextInt());
 							
@@ -695,13 +789,23 @@ public class AutoBankSystem {
 							
 							returnedTransactionPojo = transactionService.makeDeposit(newTransactionPojo);
 							
+							} catch (Exception e) {
+								
+								System.out.println("invalid input: try again");
+								
+								System.exit(a);
+								
+							}
+							
 							a = 'n';
 							
 							break;
 							
 						case 2:
 							
-							System.out.println("Enter account number");
+							try {
+							
+							System.out.println("Enter your account number");
 							
 							newTransactionPojo.setAccountNumber(scan.nextInt());
 							
@@ -718,14 +822,14 @@ public class AutoBankSystem {
 							newTransactionPojo.setTargetRoutNo(scan.nextInt());
 							
 							newTransactionPojo.setTime(new Date().toString());
-							
-							try {
 								
-								returnedTransactionPojo = transactionService.makeWithdrawal(newTransactionPojo);
+							returnedTransactionPojo = transactionService.makeWithdrawal(newTransactionPojo);
 								
-							} catch (BalanceBelowZeroException e) {
+							} catch (Exception e) {
 								
-								e.printStackTrace();
+								System.out.println("invalid input or illegitimate transaction attempt: try again");
+								
+								System.exit(a);
 								
 							}
 							
@@ -741,13 +845,22 @@ public class AutoBankSystem {
 							
 							returnedTransactionPojo = transactionService.viewBalance(newTransactionPojo);
 							
-							System.out.println(returnedTransactionPojo.getUpdatedBalance());
+							if (returnedTransactionPojo.getTransactionNumber() != 0) {
+								
+								System.out.println(returnedTransactionPojo.getUpdatedBalance());
+
+							} else {
+								System.out.println("Failed to retrieve information. Check your input.");
+							}
 							
+																					
 							a = 'n';
 							
 							break;
 							
 						case 4:
+							
+							try {
 							
 							System.out.println("Enter transaction amount");
 							
@@ -762,22 +875,14 @@ public class AutoBankSystem {
 							newTransactionPojo.setTargetRoutNo(scan.nextInt());
 							
 							newTransactionPojo.setTime(new Date().toString());
-							
-							try {
 								
-								returnedTransactionPojo = transactionService.transferFunds(newTransactionPojo);
+							returnedTransactionPojo = transactionService.transferFunds(newTransactionPojo);
 								
-							} catch (OnlyOneAccountException e) {
+							} catch (Exception e) {
 								
-								e.printStackTrace();
+								System.out.println("invalid input or illegitimate transaction attempt: try again");
 								
-							} catch (SystemException e) {
-								
-								e.printStackTrace();
-								
-							} catch (BalanceBelowZeroException e) {
-								
-								e.printStackTrace();
+								System.exit(a);
 								
 							}
 							
@@ -789,23 +894,21 @@ public class AutoBankSystem {
 							
 						case 5:
 							
+							List<TransactionPojo> resultList = null;
+							
+							try {
+							
 							System.out.println("Enter account number that you would like to see transactions for");
 							
 							newTransactionPojo.setAccountNumber(scan.nextInt());
 							
-							List<TransactionPojo> resultList = null;
-							
-							try {
+							resultList = transactionService.getTransactionsForOneAccNo(newTransactionPojo);
 								
-								resultList = transactionService.getTransactionsForOneAccNo(newTransactionPojo);
+							} catch (Exception e) {
 								
-							} catch (EmptyListException e) {
+								System.out.println("invalid input or illegitimate transaction attempt: try again");
 								
-								System.out.println(e.getMessage());
-								
-							} catch (SystemException e) {
-								
-								System.out.println(e.getMessage());
+								System.exit(a);
 								
 							}
 							

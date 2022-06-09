@@ -14,13 +14,12 @@ public class UserPojo {
 
 	}
 
-	public UserPojo(int userId, String userName, String userPassword, String userType, String userFirstName,
+	public UserPojo(int userId, String userName, String userPassword, String userFirstName,
 			String userLastName, int userPin) {
 		super();
 		this.userId = userId;
 		this.userName = userName;
 		this.userPassword = userPassword;
-		this.userType = userType;
 		this.userFirstName = userFirstName;
 		this.userLastName = userLastName;
 		this.userPin = userPin;
@@ -48,14 +47,6 @@ public class UserPojo {
 
 	public void setUserPassword(String userPassword) {
 		this.userPassword = userPassword;
-	}
-
-	public String getUserType() {
-		return userType;
-	}
-
-	public void setUserType(String userType) {
-		this.userType = userType;
 	}
 
 	public String getUserFirstName() {

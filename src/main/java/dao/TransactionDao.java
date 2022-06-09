@@ -9,12 +9,6 @@ import exception.SystemException;
 import model.TransactionPojo;
 
 public interface TransactionDao {
-
-	TransactionPojo addTransaction (TransactionPojo transactionPojo);
-	
-	List<TransactionPojo> getAllTransactions();
-	
-	TransactionPojo getOneTransaction(int transactionNumber);
 	
 	List<TransactionPojo> getTransactionsForOneAccNo(TransactionPojo transactionPojo)throws EmptyListException, SystemException;
 	

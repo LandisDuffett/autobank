@@ -19,18 +19,6 @@ public class TransactionServiceImpl implements TransactionService {
 		transactionDao = new TransactionDaoDatabaseImpl();
 	}
 	
-	public TransactionPojo addTransaction(TransactionPojo transactionPojo) {
-		return transactionDao.addTransaction(transactionPojo);
-	}
-	
-	public List<TransactionPojo> getAllTransactions() {
-		return transactionDao.getAllTransactions();
-	}
-	
-	public TransactionPojo getOneTransaction(int transactionNumber) {
-		return transactionDao.getOneTransaction(transactionNumber);
-	}
-	
 	public List<TransactionPojo> getTransactionsForOneAccNo(TransactionPojo transactionPojo)throws EmptyListException, SystemException{
 		return transactionDao.getTransactionsForOneAccNo(transactionPojo);
 	}

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.postgresql.util.PSQLException;
+
 import exception.BalanceBelowZeroException;
 import exception.EmptyListException;
 import exception.OnlyOneAccountException;
@@ -15,108 +17,6 @@ import exception.SystemException;
 import model.TransactionPojo;
 
 public class TransactionDaoDatabaseImpl implements TransactionDao {
-
-	public TransactionPojo addTransaction(TransactionPojo transactionPojo) {
-
-		Connection conn;
-
-		try {
-			conn = DBUtil.makeConnection();
-
-			Statement stmt = conn.createStatement();
-
-			String query = "INSERT INTO transactions(account_number, transaction_type, transaction_amount, updated_balance, time, target_accno, target_routno) VALUES('"
-					
-					+ transactionPojo.getAccountNumber() + "', '" + transactionPojo.getTransactionType() + "', '"
-					
-					+ transactionPojo.getTransactionAmount() + "', '" + transactionPojo.getUpdatedBalance() + "', '"
-					
-					+ transactionPojo.getTargetAccNo() + "', '" + +transactionPojo.getTargetRoutNo() + "', '"
-					
-					+ transactionPojo.getTime() + "')";
-
-			int rowsAffected = stmt.executeUpdate(query);
-			
-		} catch (SQLException e) {
-			
-			e.printStackTrace();
-			
-		}
-
-		return transactionPojo;
-	}
-	
-
-	public List<TransactionPojo> getAllTransactions() {
-
-		List<TransactionPojo> allTransactions = new ArrayList<TransactionPojo>();
-
-		Connection conn;
-
-		try {
-			conn = DBUtil.makeConnection();
-
-			Statement stmt = conn.createStatement();
-
-			String query = "SELECT * FROM transactions";
-
-			ResultSet resultSet = stmt.executeQuery(query);
-
-			int counter = 0;
-
-			while (resultSet.next()) {
-				counter++;
-
-				TransactionPojo transactionPojo = new TransactionPojo(resultSet.getInt(1), resultSet.getInt(2),
-						
-						resultSet.getString(3), resultSet.getDouble(4), resultSet.getDouble(5), resultSet.getString(6),
-						
-						resultSet.getInt(7), resultSet.getInt(8));
-				
-				allTransactions.add(transactionPojo);
-			}
-
-		} catch (SQLException e) {
-			
-			e.printStackTrace();
-			
-		}
-
-		return allTransactions;
-	}
-
-	public TransactionPojo getOneTransaction(int transactionNumber) {
-		
-		Connection conn = null;
-		
-		TransactionPojo transactionPojo = null;
-		
-		try {
-			
-			conn = DBUtil.makeConnection();
-			
-			Statement stmt = conn.createStatement();
-			
-			String query = "SELECT * FROM transactions WHERE transaction_number=" + transactionNumber;
-			
-			ResultSet resultSet = stmt.executeQuery(query);
-			
-			if (resultSet.next()) {
-				
-				transactionPojo = new TransactionPojo(resultSet.getInt(1), resultSet.getInt(2), resultSet.getString(3),
-						
-						resultSet.getDouble(4), resultSet.getDouble(5), resultSet.getString(6), resultSet.getInt(7),
-						
-						resultSet.getInt(8));
-			}
-		} catch (SQLException e) {
-			
-			e.printStackTrace();
-		}
-		return transactionPojo;
-
-	}
-
 	
 	public List<TransactionPojo> getTransactionsForOneAccNo(TransactionPojo transactionPojo)
 			throws EmptyListException, SystemException {
@@ -184,11 +84,9 @@ public class TransactionDaoDatabaseImpl implements TransactionDao {
 
 			Statement stmt = conn.createStatement();
 
-			String query = "INSERT INTO transactions(account_number, transaction_type, transaction_amount, updated_balance, time, target_accno, target_routno) VALUES((SELECT accounts.account_number FROM accounts INNER JOIN accountUsers ON accounts.account_number = accountUsers.account_number INNER JOIN users ON accountUsers.user_id=users.user_id WHERE accountUsers.account_number="
-
-					+ transactionPojo.getAccountNumber()
+			String query = "INSERT INTO transactions(account_number, transaction_type, transaction_amount, updated_balance, time, "
 					
-					+ " AND users.user_id=(SELECT user_id FROM sessions WHERE session_number = (SELECT MAX(session_number) FROM sessions))), 'deposit', ABS("
+					+ "target_accno, target_routno) VALUES(" + transactionPojo.getAccountNumber() + ", 'deposit', ABS("
 					
 					+ transactionPojo.getTransactionAmount()
 					
@@ -285,10 +183,10 @@ public class TransactionDaoDatabaseImpl implements TransactionDao {
 			
 		} catch (SQLException e) {
 			
-			e.printStackTrace();
+			System.out.println("Invalid data or illegitimate transaction attempt.");
 			
-		}
-
+		} 
+		
 		return transactionPojo;
 	}
 	
@@ -402,6 +300,9 @@ public class TransactionDaoDatabaseImpl implements TransactionDao {
 			
 			throw new SystemException();
 			
+		} catch (BalanceBelowZeroException b) {
+			
+			throw new SystemException();
 		}
 		
 		return transactionPojo;

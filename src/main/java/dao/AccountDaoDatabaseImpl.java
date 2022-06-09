@@ -76,14 +76,9 @@ public class AccountDaoDatabaseImpl implements AccountDao {
 
 			Statement stmt = conn.createStatement();
 
-			String query1 = "SELECT user_id FROM sessions WHERE session_number = (SELECT MAX(session_number) FROM sessions)";
-
-			ResultSet resultSet1 = stmt.executeQuery(query1);
-
-			resultSet1.next();
-
-			String query = "SELECT * FROM accounts INNER JOIN accountUsers ON accountUsers.account_number = accounts.account_number WHERE accountUsers.user_id="
-					+ resultSet1.getInt(1) + "";
+			String query = "SELECT accounts.account_number, accounts.account_type, ROUND(CAST(accounts.account_balance AS numeric),2), accounts.access_code "
+					+ "FROM accounts INNER JOIN accountUsers ON accountUsers.account_number = accounts.account_number "
+					+ "INNER JOIN sessions ON sessions.user_id = accountUsers.user_id WHERE session_number = (SELECT MAX(session_number) FROM sessions)";
 
 			ResultSet resultSet = stmt.executeQuery(query);
 
@@ -122,42 +117,46 @@ public class AccountDaoDatabaseImpl implements AccountDao {
 			
 			Statement stmt = conn.createStatement();
 			
-			String query = "SELECT users.user_id, users.user_pin, accounts.account_number, accounts.account_type, accounts.account_balance, accounts.access_code FROM accounts INNER JOIN accountUsers on accounts.account_number = accountUsers.account_number INNER JOIN users ON users.user_id = accountUsers.user_id AND users.user_pin ="
+			String query = "SELECT users.user_id, accounts.account_number, accounts.account_type, accounts.account_balance FROM accounts "
+					
+					+ "INNER JOIN accountUsers on accounts.account_number = accountUsers.account_number INNER JOIN users ON users.user_id = "
+					
+					+ "accountUsers.user_id AND users.user_pin ="
 					
 					+ userPojo.getUserPin()
 					
-					+ "WHERE accountUsers.user_id=(SELECT user_id FROM sessions WHERE session_number=(SELECT MAX (session_number) FROM sessions)) AND accounts.account_number="
+					+ "WHERE accountUsers.user_id=(SELECT user_id FROM sessions WHERE session_number=(SELECT MAX (session_number) FROM sessions)) "
+					
+					+ "AND accounts.account_number="
 					
 					+ accountPojo.getAccountNumber() + "";
 			
 			ResultSet resultSet = stmt.executeQuery(query);
 			
 			if (resultSet.next()) {
-				
-				System.out.println("zoo");
-				
-				if (resultSet.getDouble(5) != 0) {
+								
+				if (resultSet.getDouble(4) != 0) {
 					
 					throw new BalanceNotEmptyException();
 					
 				}
 				
-				String query2 = "INSERT INTO inactive_accounts(account_number, account_type, access_code) VALUES("
+				String query2 = "INSERT INTO inactive_accounts(account_number, account_type) VALUES("
 						
-						+ resultSet.getInt(3) + ", '" + resultSet.getString(4) + "', " + resultSet.getInt(6) + ")";
+						+ resultSet.getInt(2) + ", '" + resultSet.getString(3) + "')";
 				
-				String query3 = "DELETE FROM accounts WHERE account_number=" + resultSet.getInt(3) + "";
-				
-				String query4 = "DELETE FROM accountUsers WHERE account_number=" + resultSet.getInt(3) + " AND user_id="
+				String query3 = "INSERT INTO inactive_accountusers(account_number, user_id) VALUES("
 						
-						+ resultSet.getInt(1) + "";
+						+ resultSet.getInt(2) + ", " + resultSet.getInt(1) + ")";
+				
+				String query4 = "DELETE FROM accounts WHERE account_number=" + resultSet.getInt(2) + "";
 				
 				int rowsAffected2 = stmt.executeUpdate(query2);
 				
 				int rowsAffected3 = stmt.executeUpdate(query3);
 				
 				int rowsAffected4 = stmt.executeUpdate(query4);
-			
+							
 				if (rowsAffected2 == 1 && rowsAffected3 == 1 && rowsAffected4 == 1) {
 					
 					success = true;

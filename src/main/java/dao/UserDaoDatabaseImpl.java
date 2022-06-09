@@ -76,12 +76,12 @@ public class UserDaoDatabaseImpl implements UserDao {
 					+ userPojo.getUserPassword() + "'";
 			
 			ResultSet resultSet = stmt.executeQuery(query);
-			
-			if (resultSet.next() && (resultSet.getInt(1) != 0)) {
+						
+			if (resultSet.next() && resultSet.getInt(1) > 0) {
 				
 				userPojo = new UserPojo(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
 						
-						resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getInt(7));
+						resultSet.getString(4), resultSet.getString(5), resultSet.getInt(6));
 				
 				sessionPojo.setUserId(userPojo.getUserId());
 				
