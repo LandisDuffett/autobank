@@ -434,7 +434,7 @@ public class AutoBankSystem {
 							
 						case 2:
 							
-							System.out.println("Enter PIN");
+							System.out.println("This action will delete your electronic account only and will not affect your bank account(s). Enter PIN");
 							
 							newUserPojo.setUserPin(scan.nextInt());
 							
@@ -617,13 +617,17 @@ public class AutoBankSystem {
 
 							 try {
 							
-							 System.out.println("Enter account to link to:");
+							 System.out.println("You may add yourself as an owner of any account for which you have the proper credentials.");
+							 
+							 System.out.println("You must have the account number and access code for the account you are linking to as well as your own PIN.");
+							
+							 System.out.println("Enter account number to link to:");
 							 
 							 newAccountPojo.setAccountNumber(scan.nextInt());
 							 
 							 scan.nextLine();
 							 
-							 System.out.println("Enter access code for this account:");
+							 System.out.println("Enter access code for the account:");
 							 
 							 newAccountPojo.setAccessCode(scan.nextInt());
 							 
@@ -663,7 +667,11 @@ public class AutoBankSystem {
 							
 						case 4:
 							
-							System.out.println("Enter PIN");
+							System.out.println("This action will close any bank account to which you are linked.");
+							
+							System.out.println("Account balance must be 0.00 in order to close the account.");
+							
+							System.out.println("Enter PIN:");
 							
 							newUserPojo.setUserPin(scan.nextInt());
 							
@@ -769,6 +777,14 @@ public class AutoBankSystem {
 							
 							try {
 							
+							System.out.println("You may deposit funds to any account at this bank.");
+							
+							System.out.println("For the source of the funds, you may enter the routing number and account number for an account at this bank or any bank.");
+							
+							System.out.println("Account balance of receiver of funds will be updated immediately but routing and account number of");
+							
+							System.out.println("depositor account mut be verified before funds are fully available.");
+							
 							System.out.println("Enter account number to deposit to");
 							
 							newTransactionPojo.setAccountNumber(scan.nextInt());
@@ -804,6 +820,16 @@ public class AutoBankSystem {
 						case 2:
 							
 							try {
+							
+							System.out.println("You may only withdraw funds from an account you are linked to.");
+								
+							System.out.println("You may enter the routing number and account number for an account at this bank or any bank");
+							
+							System.out.println("for the party that is to receive the funds you are withdrawing.");
+								
+							System.out.println("Your account balance will be updated immediately but routing and account number of");
+								
+							System.out.println("receiver account mut be verified before funds are fully available to that account.");
 							
 							System.out.println("Enter your account number");
 							
@@ -861,6 +887,8 @@ public class AutoBankSystem {
 						case 4:
 							
 							try {
+								
+							System.out.println("You may transfer funds between any accounts to which you are linked.");
 							
 							System.out.println("Enter transaction amount");
 							
